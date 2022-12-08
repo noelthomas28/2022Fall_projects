@@ -3,7 +3,7 @@ import pandas as pd
 import matplotlib.pyplot as plt
 
 
-def adjust_time_limits(df: pd.DataFrame, end: datetime.date, start: datetime.date = '2009-01-01') -> pd.DataFrame:
+def adjust_time_limits(df: pd.DataFrame, end: str, start: str = '2009-01-01') -> pd.DataFrame:
     """
     This function helps us extract the breaches between any two dates we desire.
 
@@ -11,6 +11,29 @@ def adjust_time_limits(df: pd.DataFrame, end: datetime.date, start: datetime.dat
     :param end: The desired end date
     :param start: The desired start date
     :return: The dataframe with records between the desired date limits
+
+    >>> df = pd.DataFrame([[1,'2008-12-31'], [2,'2010-07-15'], [3,'2012-12-24']], columns=["A", "Breach Submission Date"])
+    >>> df = adjust_time_limits(df, '2012-12-31')
+    >>> df.head()
+       A Breach Submission Date
+    1  2             2010-07-15
+    2  3             2012-12-24
+
+    >>> df = pd.DataFrame([[1,'2009-01-02'], [2,'2010-07-15'], [3,'2012-12-24']], columns=["A", "Breach Submission Date"])
+    >>> df = adjust_time_limits(df, '2012-12-31', '2009-01-01')
+    >>> df.head()
+       A Breach Submission Date
+    0  1             2009-01-02
+    1  2             2010-07-15
+    2  3             2012-12-24
+
+    >>> df = pd.DataFrame([[1,'2009-01-02'], [2,'2010-07-15'], [3,'2012-12-24']], columns=["A", "Breach Submission Date"])
+    >>> df = adjust_time_limits(df, '2009-01-01', '2012-12-31')
+    >>> df.head()
+    Empty DataFrame
+    Columns: [A, Breach Submission Date]
+    Index: []
+
     """
     df = df.loc[(df['Breach Submission Date'] >= start) & (df['Breach Submission Date'] <= end)]
 
