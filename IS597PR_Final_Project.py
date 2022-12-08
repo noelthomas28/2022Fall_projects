@@ -2,6 +2,7 @@ import pandas as pd
 import matplotlib.pyplot as plt
 
 
+
 def adjust_time_limits(df: pd.DataFrame, end: str, start: str = '2009-01-01') -> pd.DataFrame:
     """
     This function helps us extract the breaches between any two dates we desire.
@@ -140,13 +141,42 @@ def fix_columns(df: pd.DataFrame, column_name: str) -> pd.DataFrame:
             if 'Paper' in x:
                 df.loc[df[column_name] == x, 'Location'] = 'Paper'
                 continue
-        #df.drop([column_name], axis=1, inplace=True)
-        #df = df.rename(columns={'Location': 'Location of Breach'})
+        df.drop([column_name], axis=1, inplace=True)
+        df = df.rename(columns={'Location': 'Location of Breach'})
         return df
 
     if column_name not in df.columns:
         print("The column name is not one of the columns in the dataframe. Returning the unchanged dataframe.")
         return df
+
+
+def analyze_column(df: pd.DataFrame, column_name: str) -> None:
+    """
+    TODO: The doctest fails due to an indentation issue. Fix it.
+
+    This function performs the group_by() on the desired column and plots the aggregated values of individuals affected,
+    'business associate present' and 'covered entities involved'.
+
+    :param df: The dataframe containing the columns to be aggregated
+    :param column_name: The column by which the dataframe will be aggregated by
+    :return: Prints all the required information inside the function. No return value.
+
+    >>> df = pd.DataFrame([[1,'Hacking/IT Incident'], [2,'Improper Disposal']], columns=["Individuals Affected", "Type of Breach"])
+    >>> analyze_column(df,'Type of Breach')
+                         Individuals Affected
+    Type of Breach
+    Hacking/IT Incident                     1
+    Improper Disposal                       2
+    """
+    pd.set_option('display.max_columns', 3)
+    print("Aggregated values when grouped by {}:".format(column_name))
+    agg = df.groupby([column_name]).sum()
+    print(agg)
+
+    agg.plot(kind='bar', y='Individuals Affected', title=column_name)
+    agg.plot(kind='bar', y='Business Associate Present', color='orange', title=column_name)
+    agg.plot(kind='bar', y='Covered Entities Involved', color='green', title=column_name)
+    plt.show()
 
 
 if __name__ == '__main__':
@@ -171,4 +201,7 @@ if __name__ == '__main__':
 
     df1['Covered Entities Involved'] = df1.apply(lambda dataset: change_to_binary(dataset, 'Covered Entity Type'), axis=1)
 
+    analyze_column(df1, 'Type of Breach')
+
+    analyze_column(df1, 'Location of Breach')
 
