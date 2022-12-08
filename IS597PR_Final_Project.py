@@ -35,6 +35,7 @@ def adjust_time_limits(df: pd.DataFrame, end: str, start: str = '2009-01-01') ->
     Index: []
 
     """
+
     df = df.loc[(df['Breach Submission Date'] >= start) & (df['Breach Submission Date'] <= end)]
 
     return df
@@ -76,6 +77,28 @@ def fixcolumns(df:pd.DataFrame, column_name:str) -> pd.DataFrame:
     :param df: This is the dataframe with the column that needs to be cleaned
     :param column_name: This is the name of the column that needs to be cleaned
     :return: A dataframe with a new column containing no overlapping and only unique values
+
+    >>> df = pd.DataFrame([[1,'Hacking/IT Incident, Theft'], [2,'Improper Disposal, Loss, Theft']], columns=["A", "Type of Breach"])
+    >>> df = fixcolumns(df, 'Type of Breach')
+    >>> df.head()
+       A       Type of Breach
+    0  1  Hacking/IT Incident
+    1  2    Improper Disposal
+
+    >>> df = pd.DataFrame([[1,'Theft, Loss'], [2,'Loss, Other, Theft']], columns=["A", "Type of Breach"])
+    >>> df = fixcolumns(df, 'Type of Breach')
+    >>> df.head()
+       A Type of Breach
+    0  1           Loss
+    1  2           Loss
+
+    >>> df = pd.DataFrame([[1,'Theft, Loss'], [2,'Loss, Other, Theft']], columns=["A", "Type of Breach"])
+    >>> df = fixcolumns(df, 'Date of Breach')
+    The column name is not one of the columns in the dataframe. Returning the unchanged dataframe.
+    >>> df.head()
+       A      Type of Breach
+    0  1         Theft, Loss
+    1  2  Loss, Other, Theft
     """
 
     if column_name == 'Type of Breach':
@@ -126,6 +149,10 @@ def fixcolumns(df:pd.DataFrame, column_name:str) -> pd.DataFrame:
                 continue
         df.drop([column_name], axis=1, inplace=True)
         df = df.rename(columns={'Location': 'Location of breach'})
+        return df
+
+    if column_name not in df.columns:
+        print("The column name is not one of the columns in the dataframe. Returning the unchanged dataframe.")
         return df
 
 
