@@ -1,4 +1,3 @@
-import datetime
 import pandas as pd
 import matplotlib.pyplot as plt
 
@@ -41,27 +40,21 @@ def adjust_time_limits(df: pd.DataFrame, end: str, start: str = '2009-01-01') ->
     return df
 
 
-def cleanup(dfna: pd.DataFrame) -> pd.DataFrame:
-    """
-    This function helps us cleanup the dataframe by removing the null values. It prints the percentage of null values
-    before cleanup, in case we want to keep some columns with their null values (which we can do using a rerun of the
-    function).
+def change_to_binary(df: pd.DataFrame, column_name: str) -> int:
+    if column_name == 'Covered Entity Type':
+        if df['Covered Entity Type']:
+            return 1
+        else:
+            return 0
 
-    :param dfna: The dataframe with null values
-    :return: The cleaned dateframe without null values
-    """
-
-    print("Number of null values in each column: \n{}\n".format(dfna.isna().sum(axis=0)))
-    print("Percentage of null values in each column (before cleanup): \n{}".format(
-        round(df1.isna().sum() * 100 / len(dfna), 2)))
-
-    df = dfna.dropna(subset=['State', 'Covered Entity Type', 'Individuals Affected', 'Type of Breach',
-                             'Location of Breached Information', 'Web Description'])
-
-    return df
+    if column_name == 'Business Associate Present':
+        if df['Business Associate Present'] == 'Yes':
+            return 1
+        elif df['Business Associate Present'] == 'No':
+            return 0
 
 
-def fixcolumns(df:pd.DataFrame, column_name:str) -> pd.DataFrame:
+def fix_columns(df: pd.DataFrame, column_name: str) -> pd.DataFrame:
     """
     The function performs something like a 'cleanup' of the values in certain columns. For example, the column
     'Type of Breach' has overlapping values. The six unique values it is supposed to have are: Hacking/IT Incident,
@@ -78,22 +71,22 @@ def fixcolumns(df:pd.DataFrame, column_name:str) -> pd.DataFrame:
     :param column_name: This is the name of the column that needs to be cleaned
     :return: A dataframe with a new column containing no overlapping and only unique values
 
-    >>> df = pd.DataFrame([[1,'Hacking/IT Incident, Theft'], [2,'Improper Disposal, Loss, Theft']], columns=["A", "Type of Breach"])
-    >>> df = fixcolumns(df, 'Type of Breach')
+    >>> df = pd.DataFrame([[1,'Hacking/IT Incident, Theft'], [2,'Improper Disposal, Loss, Theft']], columns=["A", "Type of Breach"]) 
+    >>> df = fix_columns(df,'Type of Breach')
     >>> df.head()
        A       Type of Breach
     0  1  Hacking/IT Incident
     1  2    Improper Disposal
 
     >>> df = pd.DataFrame([[1,'Theft, Loss'], [2,'Loss, Other, Theft']], columns=["A", "Type of Breach"])
-    >>> df = fixcolumns(df, 'Type of Breach')
+    >>> df = fix_columns(df,'Type of Breach')
     >>> df.head()
        A Type of Breach
     0  1           Loss
     1  2           Loss
 
     >>> df = pd.DataFrame([[1,'Theft, Loss'], [2,'Loss, Other, Theft']], columns=["A", "Type of Breach"])
-    >>> df = fixcolumns(df, 'Date of Breach')
+    >>> df = fix_columns(df,'Unknown column')
     The column name is not one of the columns in the dataframe. Returning the unchanged dataframe.
     >>> df.head()
        A      Type of Breach
@@ -119,7 +112,7 @@ def fixcolumns(df:pd.DataFrame, column_name:str) -> pd.DataFrame:
                 df.loc[df[column_name] == x, 'Breach Type'] = 'Theft'
                 continue
             if 'Unknown' in x or 'Other' in x:
-                df.loc[df[column_name] == x, 'Breach Type'] = 'Other/Unkown'
+                df.loc[df[column_name] == x, 'Breach Type'] = 'Other/Unknown'
                 continue
         df.drop([column_name], axis=1, inplace=True)
         df = df.rename(columns={'Breach Type': column_name})
@@ -147,8 +140,8 @@ def fixcolumns(df:pd.DataFrame, column_name:str) -> pd.DataFrame:
             if 'Paper' in x:
                 df.loc[df[column_name] == x, 'Location'] = 'Paper'
                 continue
-        df.drop([column_name], axis=1, inplace=True)
-        df = df.rename(columns={'Location': 'Location of breach'})
+        #df.drop([column_name], axis=1, inplace=True)
+        #df = df.rename(columns={'Location': 'Location of Breach'})
         return df
 
     if column_name not in df.columns:
@@ -158,14 +151,24 @@ def fixcolumns(df:pd.DataFrame, column_name:str) -> pd.DataFrame:
 
 if __name__ == '__main__':
     d_parser = lambda x: pd.to_datetime(x, errors='coerce')
-
-    df = pd.read_csv('breach_report.csv', encoding='latin1', dtype={'Type of Breach': 'string'},
+    ds = pd.read_csv('breach_report.csv', encoding='latin1', dtype={'Type of Breach': 'string'},
                      parse_dates=['Breach Submission Date'], date_parser=d_parser)
 
-    df1 = adjust_time_limits(df, '2013-09-22')
+    df1 = adjust_time_limits(ds, '2013-09-22')
 
-    df1 = cleanup(df1)
+    print("Number of null values in each column: \n{}\n".format(df1.isna().sum(axis=0)))
+    print("Percentage of null values in each column (before cleanup): \n{}".format(
+        round(df1.isna().sum() * 100 / len(df1), 2)))
+    df1 = df1.dropna(subset=['State', 'Covered Entity Type', 'Individuals Affected', 'Type of Breach',
+                            'Location of Breached Information', 'Web Description'])
 
-    df1 = fixcolumns(df1, 'Type of Breach')
+    df1 = fix_columns(df1, 'Type of Breach')
 
-    df1 = fixcolumns(df1, 'Location of Breached Information')
+    df1 = fix_columns(df1, 'Location of Breached Information')
+
+    df1['Business Associate Present'] = df1.apply(lambda dataset: change_to_binary(dataset, 'Business Associate Present'),
+                                                  axis=1)
+
+    df1['Covered Entities Involved'] = df1.apply(lambda dataset: change_to_binary(dataset, 'Covered Entity Type'), axis=1)
+
+
