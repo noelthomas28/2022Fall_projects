@@ -7,10 +7,10 @@ def adjust_time_limits(df: pd.DataFrame, end: str, start: str = '2009-01-01') ->
     """
     This function helps us extract the breaches between any two dates we desire.
 
-    :param df: The entire dataframe
-    :param end: The desired end date
-    :param start: The desired start date
-    :return: The dataframe with records between the desired date limits
+    :param df: The entire dataframe.
+    :param end: The desired end date.
+    :param start: The desired start date.
+    :return: The dataframe with records between the desired date limits.
 
     >>> df = pd.DataFrame([[1,'2008-12-31'], [2,'2010-07-15'], [3,'2012-12-24']], columns=["A", "Breach Submission Date"])
     >>> df = adjust_time_limits(df, '2012-12-31')
@@ -42,6 +42,33 @@ def adjust_time_limits(df: pd.DataFrame, end: str, start: str = '2009-01-01') ->
 
 
 def change_to_binary(df: pd.DataFrame, column_name: str) -> int:
+    """
+    The purpose of this function is to change the values of certain columns from string to binary, for the purpose of
+    understanding and analyzing the aggregations. 'Covered Entity Type' and 'Business Associate Present' both are
+    string values, and need to be converted to integer values. To do this, a 1 is returned if a value exists in the
+    'Covered Entity Type' column and a 0 if it doesn't have a value. If the value is a 'Yes' in the
+    'Business Associate Present' column, a 1 is returned, and a 0 is returned if the value is 'No'.
+
+    :param df: The dataframe containing the columns that need to be converted.
+    :param column_name: The name of the column that needs to be converted.
+    :return: The dataframe with the new/updated column.
+
+    >>> df = pd.DataFrame([[1,'Healthcare Provider'], [2,'Health Plan'], [3, ]], columns=["A", "Covered Entity Type"])
+    >>> df['Covered Entities Involved'] = df.apply(lambda dataset: change_to_binary(dataset, 'Covered Entity Type'), axis=1)
+    >>> df.head()
+       A  Covered Entity Type  Covered Entities Involved
+    0  1  Healthcare Provider                          1
+    1  2          Health Plan                          1
+    2  3                 None                          0
+
+    >>> df = pd.DataFrame([[1,'Yes'], [2,'No'], [3, 'Yes']], columns=["A", "Business Associate Present"])
+    >>> df['Business Associate Present'] = df.apply(lambda dataset: change_to_binary(dataset, 'Business Associate Present'), axis=1)
+    >>> df.head()
+       A  Business Associate Present
+    0  1                           1
+    1  2                           0
+    2  3                           1
+    """
     if column_name == 'Covered Entity Type':
         if df['Covered Entity Type']:
             return 1
@@ -68,9 +95,9 @@ def fix_columns(df: pd.DataFrame, column_name: str) -> pd.DataFrame:
     This function accepts the dataframe and the column name that needs to be 'cleaned' and creates a new column that
     assigns each date breach to a unique value from the old column (with the overlapping values).
 
-    :param df: This is the dataframe with the column that needs to be cleaned
-    :param column_name: This is the name of the column that needs to be cleaned
-    :return: A dataframe with a new column containing no overlapping and only unique values
+    :param df: This is the dataframe with the column that needs to be cleaned.
+    :param column_name: This is the name of the column that needs to be cleaned.
+    :return: A dataframe with a new column containing no overlapping and only unique values.
 
     >>> df = pd.DataFrame([[1,'Hacking/IT Incident, Theft'], [2,'Improper Disposal, Loss, Theft']], columns=["A", "Type of Breach"]) 
     >>> df = fix_columns(df,'Type of Breach')
@@ -157,8 +184,8 @@ def analyze_column(df: pd.DataFrame, column_name: str) -> None:
     This function performs the group_by() on the desired column and plots the aggregated values of individuals affected,
     'business associate present' and 'covered entities involved'.
 
-    :param df: The dataframe containing the columns to be aggregated
-    :param column_name: The column by which the dataframe will be aggregated by
+    :param df: The dataframe containing the columns to be aggregated.
+    :param column_name: The column by which the dataframe will be aggregated by.
     :return: Prints all the required information inside the function. No return value.
 
     >>> df = pd.DataFrame([[1,'Hacking/IT Incident'], [2,'Improper Disposal'], [2,'Hacking/IT Incident']], columns=["Individuals Affected", "Type of Breach"])
@@ -187,7 +214,7 @@ def plot_yearly(df:pd.DataFrame, end: str = '2013-09-22', start: str = '2009-01-
     desired value.
     :param df: The dataframe containing the values to be aggregated and visualized.
     :param end: The end date of the desired timeframe.
-    :param start: The start date of the desired timeframe
+    :param start: The start date of the desired timeframe.
     :return: The function plots the aggregated values. No return value.
 
     >>> df = pd.DataFrame([[1,'2008-12-31'], [2,'2010-07-15'], [3,'2012-12-24']], columns=['Individuals Affected', "Breach Submission Date"])
