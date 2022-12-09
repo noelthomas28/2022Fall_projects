@@ -152,7 +152,7 @@ def fix_columns(df: pd.DataFrame, column_name: str) -> pd.DataFrame:
 
 def analyze_column(df: pd.DataFrame, column_name: str) -> None:
     """
-    TODO: The doctest fails due to an indentation issue. Fix it.
+    TODO: The doctest fails due to an indentation issue. Fix ASAP.
 
     This function performs the group_by() on the desired column and plots the aggregated values of individuals affected,
     'business associate present' and 'covered entities involved'.
@@ -161,11 +161,11 @@ def analyze_column(df: pd.DataFrame, column_name: str) -> None:
     :param column_name: The column by which the dataframe will be aggregated by
     :return: Prints all the required information inside the function. No return value.
 
-    >>> df = pd.DataFrame([[1,'Hacking/IT Incident'], [2,'Improper Disposal']], columns=["Individuals Affected", "Type of Breach"])
+    >>> df = pd.DataFrame([[1,'Hacking/IT Incident'], [2,'Improper Disposal'], [2,'Hacking/IT Incident']], columns=["Individuals Affected", "Type of Breach"])
     >>> analyze_column(df,'Type of Breach')
                          Individuals Affected
     Type of Breach
-    Hacking/IT Incident                     1
+    Hacking/IT Incident                     3
     Improper Disposal                       2
     """
     pd.set_option('display.max_columns', 3)
@@ -173,9 +173,46 @@ def analyze_column(df: pd.DataFrame, column_name: str) -> None:
     agg = df.groupby([column_name]).sum()
     print(agg)
 
-    agg.plot(kind='bar', y='Individuals Affected', title=column_name)
-    agg.plot(kind='bar', y='Business Associate Present', color='orange', title=column_name)
-    agg.plot(kind='bar', y='Covered Entities Involved', color='green', title=column_name)
+    percentage_values = round(agg.apply(lambda x: 100 * x / float(x.sum())), 2)
+    print(percentage_values)
+
+    percentage_values.plot(kind='bar', title=column_name)
+    plt.show()
+
+
+def plot_yearly(df:pd.DataFrame, end: str = '2013-09-22', start: str = '2009-01-01'):
+    """
+    This function plots the yearly aggregated values of the effects of data breaches, superimposed on each other to
+    look at any seasonal trends. Additionally, it calls the asjust_time_limits() function to set the timeframe to a
+    desired value.
+    :param df: The dataframe containing the values to be aggregated and visualized.
+    :param end: The end date of the desired timeframe.
+    :param start: The start date of the desired timeframe
+    :return: The function plots the aggregated values. No return value.
+
+    >>> df = pd.DataFrame([[1,'2008-12-31'], [2,'2010-07-15'], [3,'2012-12-24']], columns=['Individuals Affected', "Breach Submission Date"])
+    >>> plot_yearly(df)
+
+    """
+
+    df = adjust_time_limits(df, end, start)
+
+    df['Year'] = pd.DatetimeIndex(df['Breach Submission Date']).year
+    df['Month'] = pd.DatetimeIndex(df['Breach Submission Date']).month
+
+    flag = 0
+    date = df.groupby(['Year', 'Month']).sum()
+
+    for i, j in date.groupby(level=0):
+
+        if flag == 0:
+            ax = date.loc[i].plot(y='Individuals Affected', label=i)
+            flag = 1
+            continue
+        date.loc[i].plot(y='Individuals Affected', ax=ax, figsize=(16, 10), use_index=False, grid=True, label=i,
+                     legend=True)
+        ax.set(xlabel="Month", ylabel="Number of Individuals affected",
+           title="Number of Individuals affected every year")
     plt.show()
 
 
@@ -186,9 +223,9 @@ if __name__ == '__main__':
 
     df1 = adjust_time_limits(ds, '2013-09-22')
 
-    print("Number of null values in each column: \n{}\n".format(df1.isna().sum(axis=0)))
-    print("Percentage of null values in each column (before cleanup): \n{}".format(
-        round(df1.isna().sum() * 100 / len(df1), 2)))
+    #print("Number of null values in each column: \n{}\n".format(df1.isna().sum(axis=0)))
+    #print("Percentage of null values in each column (before cleanup): \n{}".format(
+    #    round(df1.isna().sum() * 100 / len(df1), 2)))
     df1 = df1.dropna(subset=['State', 'Covered Entity Type', 'Individuals Affected', 'Type of Breach',
                             'Location of Breached Information', 'Web Description'])
 
@@ -204,4 +241,6 @@ if __name__ == '__main__':
     analyze_column(df1, 'Type of Breach')
 
     analyze_column(df1, 'Location of Breach')
+
+    plot_yearly(df1, '2013-09-22')
 
