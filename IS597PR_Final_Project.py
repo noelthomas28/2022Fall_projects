@@ -2,7 +2,6 @@ import pandas as pd
 import matplotlib.pyplot as plt
 
 
-
 def adjust_time_limits(df: pd.DataFrame, end: str, start: str = '2009-01-01') -> pd.DataFrame:
     """
     This function helps us extract the breaches between any two dates we desire.
@@ -190,10 +189,15 @@ def analyze_column(df: pd.DataFrame, column_name: str) -> None:
 
     >>> df = pd.DataFrame([[1,'Hacking/IT Incident'], [2,'Improper Disposal'], [2,'Hacking/IT Incident']], columns=["Individuals Affected", "Type of Breach"])
     >>> analyze_column(df,'Type of Breach')
+    Aggregated values when grouped by Type of Breach:
                          Individuals Affected
     Type of Breach
     Hacking/IT Incident                     3
     Improper Disposal                       2
+                         Individuals Affected
+    Type of Breach
+    Hacking/IT Incident                  60.0
+    Improper Disposal                    40.0
     """
     pd.set_option('display.max_columns', 3)
     print("Aggregated values when grouped by {}:".format(column_name))
@@ -207,7 +211,7 @@ def analyze_column(df: pd.DataFrame, column_name: str) -> None:
     plt.show()
 
 
-def plot_yearly(df:pd.DataFrame, end: str = '2013-09-22', start: str = '2009-01-01'):
+def plot_yearly(df: pd.DataFrame, end: str = '2013-09-22', start: str = '2009-01-01'):
     """
     This function plots the yearly aggregated values of the effects of data breaches, superimposed on each other to
     look at any seasonal trends. Additionally, it calls the asjust_time_limits() function to set the timeframe to a
@@ -237,9 +241,9 @@ def plot_yearly(df:pd.DataFrame, end: str = '2013-09-22', start: str = '2009-01-
             flag = 1
             continue
         date.loc[i].plot(y='Individuals Affected', ax=ax, figsize=(16, 10), use_index=False, grid=True, label=i,
-                     legend=True)
+                         legend=True)
         ax.set(xlabel="Month", ylabel="Number of Individuals affected",
-           title="Number of Individuals affected every year")
+               title="Number of Individuals affected every year")
     plt.show()
 
 
@@ -250,24 +254,25 @@ if __name__ == '__main__':
 
     df1 = adjust_time_limits(ds, '2013-09-22')
 
-    #print("Number of null values in each column: \n{}\n".format(df1.isna().sum(axis=0)))
-    #print("Percentage of null values in each column (before cleanup): \n{}".format(
+    # print("Number of null values in each column: \n{}\n".format(df1.isna().sum(axis=0)))
+    # print("Percentage of null values in each column (before cleanup): \n{}".format(
     #    round(df1.isna().sum() * 100 / len(df1), 2)))
     df1 = df1.dropna(subset=['State', 'Covered Entity Type', 'Individuals Affected', 'Type of Breach',
-                            'Location of Breached Information', 'Web Description'])
+                             'Location of Breached Information', 'Web Description'])
 
     df1 = fix_columns(df1, 'Type of Breach')
 
     df1 = fix_columns(df1, 'Location of Breached Information')
 
-    df1['Business Associate Present'] = df1.apply(lambda dataset: change_to_binary(dataset, 'Business Associate Present'),
-                                                  axis=1)
+    df1['Business Associate Present'] = df1.apply(
+        lambda dataset: change_to_binary(dataset, 'Business Associate Present'),
+        axis=1)
 
-    df1['Covered Entities Involved'] = df1.apply(lambda dataset: change_to_binary(dataset, 'Covered Entity Type'), axis=1)
+    df1['Covered Entities Involved'] = df1.apply(lambda dataset: change_to_binary(dataset, 'Covered Entity Type'),
+                                                 axis=1)
 
     analyze_column(df1, 'Type of Breach')
 
     analyze_column(df1, 'Location of Breach')
 
     plot_yearly(df1, '2013-09-22')
-
