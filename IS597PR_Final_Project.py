@@ -178,7 +178,6 @@ def fix_columns(df: pd.DataFrame, column_name: str) -> pd.DataFrame:
 
 def analyze_column(df: pd.DataFrame, column_name: str) -> None:
     """
-    TODO: The doctest fails due to an indentation issue. Fix ASAP.
 
     This function performs the group_by() on the desired column and plots the aggregated values of individuals affected,
     'business associate present' and 'covered entities involved'.
@@ -187,18 +186,46 @@ def analyze_column(df: pd.DataFrame, column_name: str) -> None:
     :param column_name: The column by which the dataframe will be aggregated by.
     :return: Prints all the required information inside the function. No return value.
 
-    >>> df = pd.DataFrame([[1,'Hacking/IT Incident'], [2,'Improper Disposal'], [2,'Hacking/IT Incident']], columns=["Individuals Affected", "Type of Breach"])
-    >>> analyze_column(df,'Type of Breach')
+    >>> df = pd.DataFrame([[1,'Hacking/IT Incident'], [2,'Improper Disposal'], [3,'Hacking/IT Incident']], columns=["Individuals Affected", "Type of Breach"])
+    >>> analyze_column(df,'Type of Breach') # doctest: +NORMALIZE_WHITESPACE
     Aggregated values when grouped by Type of Breach:
                          Individuals Affected
     Type of Breach
-    Hacking/IT Incident                     3
+    Hacking/IT Incident                     4
     Improper Disposal                       2
                          Individuals Affected
     Type of Breach
-    Hacking/IT Incident                  60.0
-    Improper Disposal                    40.0
+    Hacking/IT Incident                 66.67
+    Improper Disposal                   33.33
+
+    >>> df = pd.DataFrame([[5,'Loss'], [7,'Theft'], [1,'Theft'], [9,'Loss']], columns=["Individuals Affected", "Type of Breach"])
+    >>> analyze_column(df,'Type of Breach') # doctest: +NORMALIZE_WHITESPACE
+    Aggregated values when grouped by Type of Breach:
+                         Individuals Affected
+    Type of Breach
+    Loss                                   14
+    Theft                                   8
+                         Individuals Affected
+    Type of Breach
+    Loss                                63.64
+    Theft                               36.36
+
+    >>> df = pd.DataFrame([[2,'Other'], [3,'Email'], [8,'Hacking'], [None,'Email']], columns=["Individuals Affected", "Type of Breach"])
+    >>> analyze_column(df,'Type of Breach') # doctest: +NORMALIZE_WHITESPACE
+    Aggregated values when grouped by Type of Breach:
+                    Individuals Affected
+    Type of Breach
+    Email                            3.0
+    Hacking                          8.0
+    Other                            2.0
+                    Individuals Affected
+    Type of Breach
+    Email                          23.08
+    Hacking                        61.54
+    Other                          15.38
+
     """
+
     pd.set_option('display.max_columns', 3)
     print("Aggregated values when grouped by {}:".format(column_name))
     agg = df.groupby([column_name]).sum()
