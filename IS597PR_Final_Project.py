@@ -105,12 +105,12 @@ def fix_columns(df: pd.DataFrame, column_name: str) -> pd.DataFrame:
     0  1  Hacking/IT Incident
     1  2    Improper Disposal
 
-    >>> df = pd.DataFrame([[1,'Theft, Loss'], [2,'Loss, Other, Theft']], columns=["A", "Type of Breach"])
-    >>> df = fix_columns(df,'Type of Breach')
+    >>> df = pd.DataFrame([[1,'Laptop, Network Server'], [2,'Desktop Computer, Laptop']], columns=["A", "Location of Breached Information"])
+    >>> df = fix_columns(df,'Location of Breached Information')
     >>> df.head()
-       A Type of Breach
-    0  1           Loss
-    1  2           Loss
+       A Location of Breach
+    0  1            Laptops
+    1  2  Desktop Computers
 
     >>> df = pd.DataFrame([[1,'Theft, Loss'], [2,'Loss, Other, Theft']], columns=["A", "Type of Breach"])
     >>> df = fix_columns(df,'Unknown column')
