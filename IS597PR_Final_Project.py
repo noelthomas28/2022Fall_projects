@@ -91,9 +91,9 @@ def cleanup(df: pd.DataFrame) -> pd.DataFrame:
 
 
     """
-    # print("Number of null values in each column: \n{}\n".format(df.isna().sum(axis=0)))
-    # print("Percentage of null values in each column (before cleanup): \n{}".format(
-    #    round(df.isna().sum() * 100 / len(df), 2)))
+    print("Number of null values in each column: \n{}\n".format(df.isna().sum(axis=0)))
+    print("Percentage of null values in each column (before cleanup): \n{}".format(
+        round(df.isna().sum() * 100 / len(df), 2)))
     df = df.dropna(subset=['State', 'Covered Entity Type', 'Individuals Affected', 'Type of Breach',
                            'Location of Breached Information', 'Web Description'])
 
