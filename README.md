@@ -1,10 +1,10 @@
-#Group 5: Examination of Health Data Breaches Study
+# Group 5: Examination of Health Data Breaches Study
 
-###Ivory Chorng, Noel Thomas
+### Ivory Chorng, Noel Thomas
 
-We looked at a study on data breaches in the United States (https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4272442/) and 
+We looked at a study on data breaches in the United States [[Link]](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4272442/) and 
 wanted to improve it. The author’s data was acquired from the U.S. Department of Health and Human Service, Office for 
-Civil Rights (https://ocrportal.hhs.gov/ocr/breach/breach_report.jsf Links to an external site.). The page includes 
+Civil Rights [[Link]](https://ocrportal.hhs.gov/ocr/breach/breach_report.jsf). The page includes 
 breaches reported within the last 24 months (when the study was done, which is 2013) that are currently under 
 investigation by the Office for Civil Rights.
 
@@ -14,9 +14,10 @@ ideas include: using the date of breach to understand trends in data breaches an
 
 We have two hypotheses that we want to verify:
 
-Hypothesis 1: Data breaches increase during the holiday season.
+**Hypothesis 1**: Data breaches increase during the holiday season.
 
-Hypothesis 2: States with higher population have more data breaches.
+**Hypothesis 2**: States with higher population have more data breaches.
+
 
 First, replicating the study. To do this, we had to first process the dataframe. The first two functions, read_file() 
 and adjust_time_limits() help us read in the data and slice it to retrieve the data from the desired timeframe 
