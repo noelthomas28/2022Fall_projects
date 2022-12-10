@@ -388,10 +388,10 @@ if __name__ == '__main__':
 
     df1 = read_file(file_path)
 
-    analyze_column(df1, 'Type of Breach', '2013-09-22')
+    #analyze_column(df1, 'Type of Breach', '2013-09-22')
 
-    analyze_column(df1, 'Location of Breach', '2013-09-22')
+    #analyze_column(df1, 'Location of Breach', '2013-09-22')
 
-    plot_seasonal(df1, '2013-09-22')
+    plot_seasonal(df1, '2022-09-22')
 
-    check_trends(df1, '2013-09-22')
+    #check_trends(df1, '2013-09-22')

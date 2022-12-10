@@ -18,7 +18,7 @@ We have two hypotheses that we want to verify:
 
 **Hypothesis 1**: Data breaches increase during the holiday season.
 
-**Hypothesis 2**: States with higher population have more data breaches.\
+**Hypothesis 2**: States with higher population have more data breaches.
 
 
 
