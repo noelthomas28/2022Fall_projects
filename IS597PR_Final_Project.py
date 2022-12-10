@@ -1,5 +1,25 @@
 import pandas as pd
 import matplotlib.pyplot as plt
+import os
+
+
+def read_file(path: str) -> pd.DataFrame:
+    """
+    This function helps us read the file in. The path can be specified in the function call in the main() function and
+    this function returns the dataframe.
+    :param path: The path of the file in the user's system.
+    :return: The dataframe.
+    """
+
+    absolute_path = os.path.dirname(__file__)
+    relative_path = path
+    final_path = os.path.join(absolute_path, relative_path)
+
+    d_parser = lambda x: pd.to_datetime(x, errors='coerce')
+    df = pd.read_csv(final_path, encoding='latin1', dtype={'Type of Breach': 'string'},
+                      parse_dates=['Breach Submission Date'], date_parser=d_parser)
+
+    return df
 
 
 def adjust_time_limits(df: pd.DataFrame, end: str, start: str = '2009-01-01') -> pd.DataFrame:
@@ -239,43 +259,51 @@ def analyze_column(df: pd.DataFrame, column_name: str, end: str = '2013-09-22', 
     :param start: The start date of the desired timeframe.
     :return: Prints all the required information inside the function. No return value.
 
-    >>> df = pd.DataFrame([[1,'Hacking/IT Incident'], [2,'Improper Disposal'], [3,'Hacking/IT Incident']], columns=["Individuals Affected", "Type of Breach"])
-    >>> analyze_column(df,'Type of Breach') # doctest: +NORMALIZE_WHITESPACE
+    >>> df = pd.DataFrame([['CA', 'Health Plan', 'Yes', 13, 'Loss', 'Email', 'Lost via Email','2010-15-02'], ['NY', 'Health Plan', 'No', 7, 'Theft', 'Laptop', 'Laptop stolen','2009-01-02']], columns=['State', 'Covered Entity Type', 'Business Associate Present', 'Individuals Affected', 'Type of Breach', 'Location of Breached Information', 'Web Description', "Breach Submission Date"])
+    >>> analyze_column(df,'Type of Breach') # doctest: +ELLIPSIS
     Aggregated values when grouped by Type of Breach:
-                         Individuals Affected
-    Type of Breach
-    Hacking/IT Incident                     4
-    Improper Disposal                       2
-                         Individuals Affected
-    Type of Breach
-    Hacking/IT Incident                 66.67
-    Improper Disposal                   33.33
+                    Business Associate Present  ...  Covered Entities Involved
+    Type of Breach                              ...
+    Loss                                     1  ...                          1
+    Theft                                    0  ...                          1
+    <BLANKLINE>
+    [2 rows x 3 columns]
+                    Business Associate Present  ...  Covered Entities Involved
+    Type of Breach                              ...
+    Loss                                 100.0  ...                       50.0
+    Theft                                  0.0  ...                       50.0
+    <BLANKLINE>
+    [2 rows x 3 columns]
 
-    >>> df = pd.DataFrame([[5,'Loss'], [7,'Theft'], [1,'Theft'], [9,'Loss']], columns=["Individuals Affected", "Type of Breach"])
-    >>> analyze_column(df,'Type of Breach') # doctest: +NORMALIZE_WHITESPACE
+    >>> df = pd.DataFrame([['CA', 'Health Plan', 'Yes', 5, 'Loss', 'Email', 'Lost via Email','2010-15-02'], ['NY', 'Health Plan', 'No', 9, 'Theft', 'Laptop', 'Laptop stolen','2009-01-02'], ['TX', 'Health Plan', 'No', 9, 'Theft', 'Laptop', None, '2009-01-02']], columns=['State', 'Covered Entity Type', 'Business Associate Present', 'Individuals Affected', 'Type of Breach', 'Location of Breached Information', 'Web Description', "Breach Submission Date"])
+    >>> analyze_column(df,'Type of Breach') # doctest: +ELLIPSIS
     Aggregated values when grouped by Type of Breach:
-                         Individuals Affected
-    Type of Breach
-    Loss                                   14
-    Theft                                   8
-                         Individuals Affected
-    Type of Breach
-    Loss                                63.64
-    Theft                               36.36
+                    Business Associate Present  ...  Covered Entities Involved
+    Type of Breach                              ...
+    Loss                                     1  ...                          1
+    Theft                                    0  ...                          1
+    <BLANKLINE>
+    [2 rows x 3 columns]
+                    Business Associate Present  ...  Covered Entities Involved
+    Type of Breach                              ...
+    Loss                                 100.0  ...                       50.0
+    Theft                                  0.0  ...                       50.0
+    <BLANKLINE>
+    [2 rows x 3 columns]
 
-    >>> df = pd.DataFrame([[2,'Other'], [3,'Email'], [8,'Hacking'], [None,'Email']], columns=["Individuals Affected", "Type of Breach"])
-    >>> analyze_column(df,'Type of Breach') # doctest: +NORMALIZE_WHITESPACE
+    >>> df = pd.DataFrame([['NY', 'Health Plan', 'No', 9, 'Theft', 'Laptop', 'Laptop stolen','2009-01-02'], ['NY', 'Health Plan', 'No', 17, 'Theft', 'Laptop', 'Laptop stolen','2009-01-02']], columns=['State', 'Covered Entity Type', 'Business Associate Present', 'Individuals Affected', 'Type of Breach', 'Location of Breached Information', 'Web Description', "Breach Submission Date"])
+    >>> analyze_column(df,'Type of Breach') # doctest: +ELLIPSIS
     Aggregated values when grouped by Type of Breach:
-                    Individuals Affected
-    Type of Breach
-    Email                            3.0
-    Hacking                          8.0
-    Other                            2.0
-                    Individuals Affected
-    Type of Breach
-    Email                          23.08
-    Hacking                        61.54
-    Other                          15.38
+                    Business Associate Present  ...  Covered Entities Involved
+    Type of Breach                              ...
+    Theft                                    0  ...                          2
+    <BLANKLINE>
+    [1 rows x 3 columns]
+                    Business Associate Present  ...  Covered Entities Involved
+    Type of Breach                              ...
+    Theft                                  NaN  ...                      100.0
+    <BLANKLINE>
+    [1 rows x 3 columns]
 
     """
 
@@ -283,7 +311,7 @@ def analyze_column(df: pd.DataFrame, column_name: str, end: str = '2013-09-22', 
 
     df = cleanup(df)
 
-    pd.set_option('display.max_columns', 3)
+    #pd.set_option('display.max_columns', 3)
     print("Aggregated values when grouped by {}:".format(column_name))
     agg = df.groupby([column_name]).sum()
     print(agg)
@@ -298,15 +326,12 @@ def analyze_column(df: pd.DataFrame, column_name: str, end: str = '2013-09-22', 
 def plot_seasonal(df: pd.DataFrame, end: str = '2013-09-22', start: str = '2009-01-01') -> None:
     """
     This function plots the yearly aggregated values of the effects of data breaches, superimposed on each other to
-    look at any seasonal trends. Additionally, it calls the asjust_time_limits() function to set the timeframe to a
+    look at any seasonal trends. Additionally, it calls the adjust_time_limits() function to set the timeframe to a
     desired value.
     :param df: The dataframe containing the values to be aggregated and visualized.
     :param end: The end date of the desired timeframe.
     :param start: The start date of the desired timeframe.
     :return: The function plots the aggregated values. No return value.
-
-    >>> df = pd.DataFrame([[1,'2008-12-31'], [2,'2010-07-15'], [3,'2012-12-24']], columns=['Individuals Affected', "Breach Submission Date"])
-    >>> plot_seasonal(df)
 
     """
 
@@ -358,9 +383,10 @@ def check_trends(df: pd.DataFrame, end: str = '2013-09-22', start: str = '2009-0
 
 
 if __name__ == '__main__':
-    d_parser = lambda x: pd.to_datetime(x, errors='coerce')
-    df1 = pd.read_csv('breach_report.csv', encoding='latin1', dtype={'Type of Breach': 'string'},
-                      parse_dates=['Breach Submission Date'], date_parser=d_parser)
+
+    file_path = 'breach_report.csv'
+
+    df1 = read_file(file_path)
 
     analyze_column(df1, 'Type of Breach', '2013-09-22')
 
