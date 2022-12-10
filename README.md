@@ -11,3 +11,9 @@ investigation by the Office for Civil Rights.
 We plan to improve the work done in this study and look at aspects of data breaches that they couldn't. Some of our 
 ideas include: using the date of breach to understand trends in data breaches and aggregating by more than one level
 (state, location and type of breach) to understand more about the nature of data breaches in this country.
+
+We two hypotheses that we want to verify:
+
+Hypothesis 1: Data breaches increase during the holiday season
+
+Hypothesis 2: States with higher population have more data breaches
