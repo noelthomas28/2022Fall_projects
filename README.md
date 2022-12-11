@@ -48,8 +48,13 @@ visuals related to it. plot_seasonal() shows us the annual trend of data breache
 time of year when we could see a potentially higher number of data breaches. The second function, check_trends() shows 
 us the general trend of data breaches since the earliest date available in the dataset (2009).
 
+Looking at the trend of data breaches in the United States, we can see an increase from the first date (October 2009), 
+until the start of 2014, and then a sharp decrease until the last available date in the dataset (July 2016):
 
-#### Hypothesis 1
+![alt text](https://github.com/noelthomas28/2022Fall_projects/blob/main/Trend.png "Number of data breaches in the US")
+
+
+### Hypothesis 1
 
 We expected data breaches to increase during the holiday season, which we subjectively defined as the last six weeks of 
 the year, from mid-November to the end of December. When we plotted the count of data breaches each year until the 

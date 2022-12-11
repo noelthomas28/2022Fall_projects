@@ -17,12 +17,12 @@ def read_file(path: str) -> pd.DataFrame:
 
     d_parser = lambda x: pd.to_datetime(x, errors='coerce')
     df = pd.read_csv(final_path, encoding='latin1', dtype={'Type of Breach': 'string'},
-                      parse_dates=['Breach Submission Date'], date_parser=d_parser)
+                     parse_dates=['Breach Submission Date'], date_parser=d_parser)
 
     return df
 
 
-def adjust_time_limits(df: pd.DataFrame, end: str, start: str = '2009-01-01') -> pd.DataFrame:
+def adjust_time_limits(df: pd.DataFrame, end: str = '2013-09-22', start: str = '2009-01-01') -> pd.DataFrame:
     """
     This function helps us extract the breaches between any two dates we desire.
 
@@ -163,7 +163,7 @@ def fix_columns(df: pd.DataFrame, column_name: str) -> pd.DataFrame:
     to fix this issue. We decided to use this function to do this.
 
     This function accepts the dataframe and the column name that needs to be 'cleaned' and creates a new column that
-    assigns each date breach to a unique value from the old column (with the overlapping values).
+    assigns a unique value from the old column (with the overlapping values) to each date breach.
 
     :param df: This is the dataframe with the column that needs to be cleaned.
     :param column_name: This is the name of the column that needs to be cleaned.
@@ -311,7 +311,7 @@ def analyze_column(df: pd.DataFrame, column_name: str, end: str = '2013-09-22', 
 
     df = cleanup(df)
 
-    #pd.set_option('display.max_columns', 3)
+    # pd.set_option('display.max_columns', 3)
     print("Aggregated values when grouped by {}:".format(column_name))
     agg = df.groupby([column_name]).sum()
     print(agg)
@@ -377,21 +377,21 @@ def check_trends(df: pd.DataFrame, end: str = '2013-09-22', start: str = '2009-0
 
     date = df.groupby(['Year', 'Month']).count()
 
-    date.plot(y='Individuals Affected')
+    date.plot(y='Individuals Affected', grid=True, legend=False, xlabel="(Year, Month)",
+              ylabel="Number of data breaches", title="Number of data breaches in the US")
 
     plt.show()
 
 
 if __name__ == '__main__':
-
     file_path = 'breach_report.csv'
 
     df1 = read_file(file_path)
 
-    #analyze_column(df1, 'Type of Breach', '2013-09-22')
+    analyze_column(df1, 'Type of Breach', '2013-09-22')
 
-    #analyze_column(df1, 'Location of Breach', '2013-09-22')
+    analyze_column(df1, 'Location of Breach', '2013-09-22')
 
     plot_seasonal(df1, '2022-09-22')
 
-    #check_trends(df1, '2013-09-22')
+    check_trends(df1, '2022-09-22')
