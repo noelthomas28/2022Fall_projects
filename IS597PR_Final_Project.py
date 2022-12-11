@@ -91,9 +91,9 @@ def cleanup(df: pd.DataFrame) -> pd.DataFrame:
 
 
     """
-    print("Number of null values in each column: \n{}\n".format(df.isna().sum(axis=0)))
-    print("Percentage of null values in each column (before cleanup): \n{}".format(
-        round(df.isna().sum() * 100 / len(df), 2)))
+    #print("Number of null values in each column: \n{}\n".format(df.isna().sum(axis=0)))
+    #print("Percentage of null values in each column (before cleanup): \n{}".format(
+    #    round(df.isna().sum() * 100 / len(df), 2)))
     df = df.dropna(subset=['State', 'Covered Entity Type', 'Individuals Affected', 'Type of Breach',
                            'Location of Breached Information', 'Web Description'])
 
@@ -418,14 +418,14 @@ if __name__ == '__main__':
 
     df1 = read_file(file_path)
 
-    #analyze_column(df1, 'Type of Breach', '2013-09-22')
+    analyze_column(df1, 'Type of Breach', '2013-09-22')
 
-    #analyze_column(df1, 'Location of Breach', '2013-09-22')
+    analyze_column(df1, 'Location of Breach', '2013-09-22')
 
-    #plot_seasonal(df1, '2022-09-22')
+    plot_seasonal(df1, '2022-09-22')
 
-    #check_trends(df1, '2022-09-22')
+    check_trends(df1, '2022-09-22')
 
-    #analyze_multi_column(df1, 'State', 'Location of Breach', '2022-09-22')
+    analyze_multi_column(df1, 'State', 'Location of Breach', '2022-09-22')
 
     analyze_multi_column(df1, 'State', 'Type of Breach', '2022-09-22')
