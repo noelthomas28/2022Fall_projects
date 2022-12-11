@@ -49,3 +49,11 @@ time of year when we could see a potentially higher number of data breaches. The
 us the general trend of data breaches since the earliest date available in the dataset (2009).
 
 
+#### Hypothesis 1
+
+We expected data breaches to increase during the holiday season, which we subjectively defined as the last six weeks of 
+the year, from mid-November to the end of December. When we plotted the count of data breaches each year until the 
+latest available date (2016), using the plot_seasonal() function, we found that this really isn't true. They remain 
+consistent all year round.
+
+![alt text](https://github.com/noelthomas28/2022Fall_projects/blob/main/Seasonal.png "Count of data breaches each year")
