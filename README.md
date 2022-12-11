@@ -32,7 +32,7 @@ We have two hypotheses that we want to verify:
 **Hypothesis 2**: Hacking is the most common type of breach and email is the most common location of breach across all 
 the states in the US.
 
-
+### Analysis
 
 First, replicating the study. To do this, we had to first process the dataframe. The first two functions, **read_file()** 
 and **adjust_time_limits()** help us read in the data and slice it to retrieve the data from the desired timeframe 
