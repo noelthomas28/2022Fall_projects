@@ -59,6 +59,11 @@ until the start of 2014, and then a sharp decrease until the last available date
 ![alt text](https://github.com/noelthomas28/2022Fall_projects/blob/main/Trend.png "Number of data breaches in the US")
 
 
+We also used the __analyze_multi_column()__ function to aggregate by more than one category and analyze the results. 
+Essentially, this function helps us study the highest contributing type or location of breach in this country for each 
+state, and thereby show us which is the most common across all states.
+
+
 ### Hypothesis 1
 
 We expected data breaches to increase during the holiday season, which we subjectively defined as the last six weeks of 
@@ -74,7 +79,12 @@ We looked at the type and location of data breaches for all the states in the co
 most common type of breach and email the most common location of breach. However, when we looked at the data (until 
 the latest date), we found that both assumptions were wrong.
 
-This was the plot for the highest contributing type of breach in the US. We can see that 'Paper' is the highest.
+This was the plot for the highest contributing location of breach in the US. We can see that 'Paper' is the highest.
 
-And this was the plot for the highest contributing location of breach in the US. 'Unauthorized Access/Disclosure' is 
+![alt text](https://github.com/noelthomas28/2022Fall_projects/blob/main/Location%20of%20Breach.png "Highest contributing location of breach")
+
+
+And this was the plot for the highest contributing type of breach in the US. 'Unauthorized Access/Disclosure' is 
 the highest.
+
+![alt text](https://github.com/noelthomas28/2022Fall_projects/blob/main/Type%20of%20Breach.png "Highest contributing type of breach")
