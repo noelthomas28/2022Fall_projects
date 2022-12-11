@@ -66,8 +66,8 @@ def cleanup(df: pd.DataFrame) -> pd.DataFrame:
     the change_to_binary() function and fix_columns() function. The reason why this is a separate function is that
     the functions that perform the analysis and create the visualizations are independent of each other. A user could
     want to see the seasonal trends in a desired date range and look at the analysis of a different date range
-    entirely. Hence, the original dataframe is passed into those three functions (analyze_column(), plot_seasonal(),
-    and check_trends()) and each of those functions call the cleanup() function individually.
+    entirely. Hence, the original dataframe is passed into those four functions (analyze_column(), plot_seasonal(),
+    check_trends() and analyze_multi_columns()) and each of those functions call the cleanup() function individually.
 
     :param df: The original, unprocessed dataframe.
     :return: The cleaned, processed dataframe.
@@ -382,16 +382,50 @@ def check_trends(df: pd.DataFrame, end: str = '2013-09-22', start: str = '2009-0
 
     plt.show()
 
+def analyze_multi_column(df: pd.DataFrame, col1: str, col2: str, end: str = '2013-09-22', start: str = '2009-01-01') -> None:
+    """
+    This function helps us analyze data breaches by more than one category. We use it to look at the type of breaches
+    in each state, or the location of breaches in each state. From this, we can aggregate these values to look at the
+    highest contributors to data breaches in all the US states. To do this, we first group by the state and the
+    second category (type or location of breach), which results in a multi index. Then we create a new column of the
+    second level of the multi index, which is essentially the type or location value. And then we select the maximum
+    value of the first level of the multi index (the state). And finally we can group by the new column we created
+    and plot the occurrences of data breaches by their cause (either type or location).
+
+    :param df: The dataframe containing the columns to be aggregated and analyzed.
+    :param col1: The first column to aggregate by.
+    :param col2: The second column to aggregate by.
+    :param end: The end date of the desired timeframe.
+    :param start: The start date of the desired timeframe.
+    :return: Prints and plots all the required information inside the function. No return value.
+    """
+    df = adjust_time_limits(df, end, start)
+    df = cleanup(df)
+
+    df2 = df.groupby([col1, col2]).sum()
+
+    df2['Cause'] = df2.index.get_level_values(1)
+
+    df3 = df2.groupby(level=0).apply(max)
+    print(df3)
+    df3.groupby(['Cause']).count().plot(kind = 'bar', y='Individuals Affected', grid=True, legend=False, xlabel= col2,
+              ylabel="Number of data breaches", title="Highest contributors of data breaches in all states", figsize=(10,10), rot=0)
+    plt.show()
+
 
 if __name__ == '__main__':
     file_path = 'breach_report.csv'
 
     df1 = read_file(file_path)
 
-    analyze_column(df1, 'Type of Breach', '2013-09-22')
+    #analyze_column(df1, 'Type of Breach', '2013-09-22')
 
-    analyze_column(df1, 'Location of Breach', '2013-09-22')
+    #analyze_column(df1, 'Location of Breach', '2013-09-22')
 
-    plot_seasonal(df1, '2022-09-22')
+    #plot_seasonal(df1, '2022-09-22')
 
-    check_trends(df1, '2022-09-22')
+    #check_trends(df1, '2022-09-22')
+
+    #analyze_multi_column(df1, 'State', 'Location of Breach', '2022-09-22')
+
+    analyze_multi_column(df1, 'State', 'Type of Breach', '2022-09-22')

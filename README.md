@@ -1,6 +1,6 @@
-# Group 5: Examination of Health Data Breaches Study
+# Examination of Health Data Breaches Study
 
-### Ivory Chorng, Noel Thomas
+### Group 5: Ivory Chorng, Noel Thomas
 
 ---
 
@@ -14,11 +14,16 @@ We plan to improve the work done in this study and look at aspects of data breac
 ideas include: using the date of breach to understand trends in data breaches and aggregating by more than one level
 (state, location and type of breach) to understand more about the nature of data breaches in this country.
 
-We have two hypotheses that we want to verify:
+**Note**: Location of breach is the source of the data breach, for example: laptops, email, etc.
+
+We have three hypotheses that we want to verify:
 
 **Hypothesis 1**: Data breaches increase during the holiday season.
 
-**Hypothesis 2**: States with higher population have more data breaches.
+**Hypothesis 2**: Hacking is the most common type of breach and email is the most common location of breach across all 
+the states in the US.
+
+**Hypothesis 3**: States with higher population have more data breaches.
 
 
 
@@ -62,3 +67,14 @@ latest available date (2016), using the plot_seasonal() function, we found that 
 consistent all year round.
 
 ![alt text](https://github.com/noelthomas28/2022Fall_projects/blob/main/Seasonal.png "Count of data breaches each year")
+
+### Hypothesis 2
+
+We looked at the type and location of data breaches for all the states in the country. We expected hacking to be the 
+most common type of breach and email the most common location of breach. However, when we looked at the data (until 
+the latest date), we found that both assumptions were wrong.
+
+This was the plot for the highest contributing type of breach in the US. We can see that 'Paper' is the highest.
+
+And this was the plot for the highest contributing location of breach in the US. 'Unauthorized Access/Disclosure' is 
+the highest.
