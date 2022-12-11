@@ -5,11 +5,11 @@
 ---
 ![alt text](https://github.com/noelthomas28/2022Fall_projects/blob/main/Tacit-Private-Healthcare-2.jpg)
 
-**Background**
+### Background
 
 Since the Privacy Rights Clearinghouse (PRC) began tracking data breaches in 2005, there have been more than 500 million instances of data breaches, affecting almost 27 million individuals by 2017. This could include theft, loss, unauthorised access, improper disclosure, or hacking incidents. This  is a problem that can be related to a patient’s life and death, so we worked on our project based on research “What Caused the Breach? An Examination of Use of Information Technology and Health Data Breaches”
 
-**What Caused the Breach? An Examination of Use of Information Technology and Health Data Breache**
+### What Caused the Breach? An Examination of Use of Information Technology and Health Data Breache
 
 In this paper, the authors looked at data breaches from three different points of view: aggregating by type of breach, by location, and by the state (in the United States). They finally move on to making conclusions about the spread of data breaches based on the various factors they studied.
 
@@ -71,7 +71,7 @@ Essentially, this function helps us study the highest contributing type or locat
 state, and thereby show us which is the most common across all states.
 
 
-### Hypothesis 1
+≈ Hypothesis 1
 
 We expected data breaches to increase during the holiday season, which we subjectively defined as the last six weeks of 
 the year, from mid-November to the end of December. When we plotted the count of data breaches each year until the 
