@@ -3,6 +3,7 @@
 ### Group 5: Ivory Chorng, Noel Thomas
 
 ---
+![alt text](https://github.com/noelthomas28/2022Fall_projects/blob/main/Tacit-Private-Healthcare-2.jpg)
 
 We looked at a study on data breaches in the United States [[Link]](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4272442/) and 
 wanted to improve it. The author’s data was acquired from the U.S. Department of Health and Human Service, Office for 
