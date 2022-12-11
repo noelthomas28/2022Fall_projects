@@ -16,14 +16,12 @@ ideas include: using the date of breach to understand trends in data breaches an
 
 **Note**: Location of breach is the source of the data breach, for example: laptops, email, etc.
 
-We have three hypotheses that we want to verify:
+We have two hypotheses that we want to verify:
 
 **Hypothesis 1**: Data breaches increase during the holiday season.
 
 **Hypothesis 2**: Hacking is the most common type of breach and email is the most common location of breach across all 
 the states in the US.
-
-**Hypothesis 3**: States with higher population have more data breaches.
 
 
 
